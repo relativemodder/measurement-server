@@ -13,10 +13,10 @@ Run Uvicorn Server:
 ```uvicorn main:app```
 
 In my case, it's:
-```uvicorn main:app --host 0.0.0.0 --port 8080```
+```uvicorn main:app --host 0.0.0.0 --port 80```
 
 Go to URL:
-```http://127.0.0.1:8080```
+```http://127.0.0.1```
 
 Enjoy!
 
