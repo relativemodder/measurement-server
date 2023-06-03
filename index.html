@@ -1,0 +1,30 @@
+<div class="offcanvas offcanvas-bottom fit" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Measurement hardware settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <form class="mb-5" id="tnameform">
+            <h3>Tables</h3>
+            <div class="mb-3">
+                <label for="tableIDinput" class="form-label">Set table name for new results</label>
+                <input type="text" class="form-control" id="tableIDinput">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Set</button>
+        </form>
+        <form class="mb-5" id="networkform">
+            <h3>Network</h3>
+            <div class="mb-3">
+                <label for="ssidinput" class="form-label">Wi-Fi SSID</label>
+                <input type="text" class="form-control" id="ssidinput">
+            </div>
+            <div class="mb-3">
+                <label for="passwordinput" class="form-label">Wi-Fi Password</label>
+                <input type="password" class="form-control" id="passwordinput">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Set</button>
+        </form>
+    </div>
+</div>
+
+<canvas id="levelsChart"></canvas>

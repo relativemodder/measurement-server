@@ -1,0 +1,17 @@
+* {
+    font-family: 'Poppins', 'Helvetica', sans-serif;
+}
+
+.fit {
+    --bs-offcanvas-height: fit-content;
+}
+
+.heightfix {
+    height: 300px!important;
+    max-height: 300px!important;
+}
+
+.chartjs-size-monitor {
+    height: 100%!important;
+    max-height: 300px!important;
+}
