@@ -12,9 +12,15 @@ const addChartToPage = (id, title = "") => {
     let deleteBtn = document.createElement("button");
     deleteBtn.className = "btn btn-danger"
     deleteBtn.innerHTML = `
-    <i class="bi bi-trash me-1"></i>
-    Delete
+    <i class="bi bi-trash"></i>
     `;
+    let xlsxBtn = document.createElement("a");
+    xlsxBtn.className = "btn btn-success me-3"
+    xlsxBtn.innerHTML = `
+    <i class="bi bi-file-earmark-spreadsheet"></i>
+    `;
+    xlsxBtn.href = "/" + id + ".xlsx"
+    xlsxBtn.target = "_blank"
 
     deleteBtn.addEventListener("click", e => {
         const confirmation = confirm("Wanna delete the table?");
@@ -23,8 +29,14 @@ const addChartToPage = (id, title = "") => {
             $(canvasContainer).hide("slow");
         })
     })
-    
-    canvasTitle.appendChild(deleteBtn);
+
+    btnContainer = document.createElement("div")
+    btnContainer.className = "d-flex"
+
+    btnContainer.appendChild(xlsxBtn);
+    btnContainer.appendChild(deleteBtn);
+
+    canvasTitle.appendChild(btnContainer);
 
     document.body.appendChild(canvasContainer);
 

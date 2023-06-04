@@ -7,6 +7,11 @@ from models.TemperatureModel import TemperatureModel
 from models.TemperaturePostModel import TemperaturePostModel
 from models.Success import Success
 
+from openpyxl import Workbook
+from openpyxl.styles import NamedStyle
+from random import randint
+from hashlib import md5
+
 def post_temperature(request: TemperaturePostModel):
     cursor = get_cursor()
     current_ts = datetime.now()
@@ -77,3 +82,70 @@ def get_pseudo_tables():
         
     cursor.connection.close()
     return l
+
+def construct_excel(pseudo_table_id: str):
+    cursor = get_cursor()
+
+    wb = Workbook()
+
+    # grab the active worksheet
+    ws = wb.active
+
+    ws['A1'] = 'Time'
+
+    get_timestamps_sql = '''SELECT ts FROM temperatures WHERE pseudo_table_id = ? ORDER BY ts ASC'''
+    cursor.execute(get_timestamps_sql, (pseudo_table_id,))
+    tss = cursor.fetchall()
+    index_ts = 2
+
+    knownts = []
+
+    for ts in tss:
+        if ts["ts"] in knownts:
+            continue
+        knownts.append(ts["ts"])
+        cellkey__ = 'A' + str(index_ts)
+        cell = ws[cellkey__]
+        cell.value = datetime.fromisoformat(ts["ts"]).strftime("%H:%M:%S")
+
+        index_ts += 1
+
+    get_thermos_sql = '''
+        SELECT thermometer_id FROM temperatures WHERE pseudo_table_id = ? GROUP BY thermometer_id
+    '''
+    cursor.execute(get_thermos_sql, (pseudo_table_id,))
+    cols = cursor.fetchall()
+
+
+    # adding thermometer id columns
+    thermo_column = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
+    thermo_index = 0
+    for col in cols:
+        ws.column_dimensions[thermo_column[thermo_index]].width = 20.43
+        cellkey = thermo_column[thermo_index] + '1'
+        ws[cellkey] = "Thermometer #%(id)s" % {
+            'id': col["thermometer_id"]
+        }
+
+        get_thermo_vals_sql = '''SELECT temperature FROM temperatures WHERE pseudo_table_id = ? AND thermometer_id = ? ORDER BY ts ASC'''
+        cursor.execute(get_thermo_vals_sql, (pseudo_table_id, col["thermometer_id"]))
+        vals = cursor.fetchall()
+        val_row_index = 2
+        for row in vals:
+            cellkey_ = thermo_column[thermo_index] + str(val_row_index)
+            ws[cellkey_] = row["temperature"]
+            val_row_index += 1
+
+
+        thermo_index += 1
+    
+    cursor.connection.close()
+
+    random_path = md5(
+        str(
+            randint(111111111, 9999999999)
+        ).encode()
+    ).hexdigest() + '.xlsx'
+
+    wb.save(random_path)
+    return random_path

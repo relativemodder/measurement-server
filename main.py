@@ -1,6 +1,7 @@
+import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 import json
 
 from dotenv import dotenv_values
@@ -9,6 +10,7 @@ from api.temperature import post_temperature as api_post_temperature
 from api.temperature import get_temperatures as api_get_temperatures
 from api.temperature import get_pseudo_tables as api_get_pseudo_tables
 from api.temperature import remove_pseudo_table
+from api.temperature import construct_excel
 
 from api.settings import set_item as api_set_item
 
@@ -97,6 +99,16 @@ def get_main_page():
     html = base.replace("<Navbar />", navbar)
     html = html.replace("<Content />", index)
     return HTMLResponse(html)
+
+@app.get("/{pseudo_table_id}.xlsx", response_class=StreamingResponse)
+def generate_excel_workbook(pseudo_table_id: str):
+    final_filename = construct_excel(pseudo_table_id)
+    def iterfile():
+        with open(final_filename, mode="rb") as file_like:
+            yield from file_like
+        os.unlink(final_filename)
+    resp = StreamingResponse(iterfile(), media_type="octet/stream")
+    return resp
 
 @app.websocket("/ws/settings")
 async def websocket_endpoint(websocket: WebSocket):
