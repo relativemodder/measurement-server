@@ -13,12 +13,10 @@ def set_item(key: str, value: str):
     return Success(success=True)
 
 def get_settings():
-    logging.warn("WTF IS GOIN ON")
     
     cursor = get_cursor()
     get_settings_sql = '''SELECT k, v FROM settings WHERE 1'''
 
-    print("Executing")
     cursor.execute(get_settings_sql)
     settings = {}
 

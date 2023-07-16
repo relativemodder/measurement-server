@@ -209,7 +209,7 @@ const onTablesUpdate = async(e) => {
 
         const tableData = await getTemperatures(chart_id)
 
-        if (mobileCheck()) {
+        if (true) {
             $(".chartcontainer").remove()
             await main();
             return;
@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("form#tnameform").addEventListener("submit", e => {
         e.preventDefault();
 
-        const tname = $('#tableIDinput').attr("value");
+        const tname = document.querySelector('#tableIDinput').value;
         setSetting("pseudo_table_id", tname);
     })
 
@@ -253,10 +253,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     })
 
-    const ws = new WebSocket("ws://" + location.hostname + ":" + location.port + "/ws/charts")
+    const ws = new WebSocket("wss://" + location.hostname + ":" + location.port + "/ws/charts")
     ws.addEventListener("message", e => onTablesUpdate(e))
 
-    const ws1 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/ws/settings")
+    const ws1 = new WebSocket("wss://" + location.hostname + ":" + location.port + "/ws/settings")
     ws1.addEventListener("message", e => onSettingsUpdate())
     
 })
