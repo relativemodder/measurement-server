@@ -1,3 +1,15 @@
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
 const addChartToPage = (id, title = "") => {
     let canvasContainer = document.createElement("div");
     canvasContainer.className = "w-100 heightfix mt-5 chartcontainer";
@@ -19,7 +31,7 @@ const addChartToPage = (id, title = "") => {
     xlsxBtn.innerHTML = `
     <i class="bi bi-file-earmark-spreadsheet"></i>
     `;
-    xlsxBtn.href = "/" + id + ".xlsx"
+    xlsxBtn.href = "https://bio-greenroof.ru/" + id + ".xlsx?" + makeid(5)
     xlsxBtn.target = "_blank"
 
     deleteBtn.addEventListener("click", e => {

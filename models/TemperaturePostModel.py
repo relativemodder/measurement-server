@@ -5,3 +5,4 @@ from models.TemperatureModel import TemperatureModel
 class TemperaturePostModel(BaseModel):
     temperatures: List[TemperatureModel]
     pseudo_table_id: str
+    lamp_enabled: int

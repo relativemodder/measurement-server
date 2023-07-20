@@ -103,6 +103,7 @@ def get_main_page():
 @app.get("/{pseudo_table_id}.xlsx", response_class=StreamingResponse)
 def generate_excel_workbook(pseudo_table_id: str):
     final_filename = construct_excel(pseudo_table_id)
+    print(final_filename)
     def iterfile():
         with open(final_filename, mode="rb") as file_like:
             yield from file_like

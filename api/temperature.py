@@ -17,11 +17,11 @@ def post_temperature(request: TemperaturePostModel):
     current_ts = datetime.now()
 
     insert_temperature_sql = '''
-        INSERT INTO temperatures (pseudo_table_id, temperature, thermometer_id, ts)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO temperatures (pseudo_table_id, temperature, thermometer_id, ts, lamp_enabled)
+        VALUES (?, ?, ?, ?, ?)
     '''
     for temperature in request.temperatures:
-        args = (request.pseudo_table_id, temperature.value, temperature.thermometer_id, current_ts)
+        args = (request.pseudo_table_id, temperature.value, temperature.thermometer_id, current_ts, request.lamp_enabled)
         cursor.execute(insert_temperature_sql, args)
     
     cursor.connection.commit()
@@ -91,9 +91,9 @@ def construct_excel(pseudo_table_id: str):
     # grab the active worksheet
     ws = wb.active
 
-    ws['A1'] = 'Time'
+    ws['A1'] = 'Time / Lamp'
 
-    get_timestamps_sql = '''SELECT ts FROM temperatures WHERE pseudo_table_id = ? ORDER BY ts ASC'''
+    get_timestamps_sql = '''SELECT ts, lamp_enabled FROM temperatures WHERE pseudo_table_id = ? ORDER BY ts ASC'''
     cursor.execute(get_timestamps_sql, (pseudo_table_id,))
     tss = cursor.fetchall()
     index_ts = 2
@@ -105,8 +105,12 @@ def construct_excel(pseudo_table_id: str):
             continue
         knownts.append(ts["ts"])
         cellkey__ = 'A' + str(index_ts)
+        cellkey__lamp = 'B' + str(index_ts)
         cell = ws[cellkey__]
         cell.value = datetime.fromisoformat(ts["ts"]).strftime("%H:%M:%S")
+        
+        cell = ws[cellkey__lamp]
+        cell.value = ts["lamp_enabled"]
 
         index_ts += 1
 
@@ -118,7 +122,7 @@ def construct_excel(pseudo_table_id: str):
 
 
     # adding thermometer id columns
-    thermo_column = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
+    thermo_column = ['C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
     thermo_index = 0
     for col in cols:
         ws.column_dimensions[thermo_column[thermo_index]].width = 20.43
