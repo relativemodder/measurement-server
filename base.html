@@ -20,6 +20,19 @@
     <Navbar />
     <Content />
 
+    <div class="qr-codes">
+        <img class="qr-code" src="/static/qr/source.png" />
+        <img class="qr-code" src="/static/qr/schema_and_models.png" />
+    </div>
+    
+    <style>
+        .qr-codes {
+            position: absolute;
+            transform: translateY(-151px);
+            z-index: -1;
+        }
+    </style>
+
     <script src="/static/js/jquery-3.7.0.min.js"></script>
     <script src="/static/js/bootstrap.bundle.min.js"></script>
 
